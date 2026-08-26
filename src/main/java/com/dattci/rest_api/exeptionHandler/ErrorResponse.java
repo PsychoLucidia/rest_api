@@ -1,4 +1,4 @@
-package com.batch1_springboot.demo.exeptionHandler;
+package com.dattci.rest_api.exeptionHandler;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
