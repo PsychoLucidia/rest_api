@@ -1,8 +1,5 @@
-package com.batch1_springboot.demo.exeptionHandler;
+package com.dattci.rest_api.exeptionHandler;
 
-import com.batch1_springboot.demo.exeptionHandler.exceptions.BadRequestException;
-import com.batch1_springboot.demo.exeptionHandler.exceptions.EmptyNameException;
-import com.batch1_springboot.demo.exeptionHandler.exceptions.NotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -10,6 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import com.dattci.rest_api.exeptionHandler.exceptions.BadRequestException;
+import com.dattci.rest_api.exeptionHandler.exceptions.EmptyNameException;
+import com.dattci.rest_api.exeptionHandler.exceptions.NotFoundException;
 
 import java.time.LocalDateTime;
 
