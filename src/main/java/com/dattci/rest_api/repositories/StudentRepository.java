@@ -35,4 +35,7 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
             "JOIN FETCH s.enrolledSubjects sub " +
             "WHERE sub.id = :subjectId")
     List<StudentEntity> findBySubjectId(@Param("subjectId") Long subjectId);
+
+    @Query("SELECT s FROM StudentEntity s WHERE email = :email")
+    Optional<StudentEntity> findByEmail(@Param("email") String email);
 }

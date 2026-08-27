@@ -3,6 +3,8 @@ package com.dattci.rest_api.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.dattci.rest_api.enums.Roles;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +37,9 @@ public class StudentEntity {
 
     @Column(name = "password", nullable = false, length = 255)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Roles role;
 
     // Many Students belong to One Course
     @ManyToOne(fetch = FetchType.LAZY)
