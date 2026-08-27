@@ -36,6 +36,6 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
             "WHERE sub.id = :subjectId")
     List<StudentEntity> findBySubjectId(@Param("subjectId") Long subjectId);
 
-    @Query("SELECT s FROM StudentEntity s WHERE email = :email")
+    @Query("SELECT DISTINCT s FROM StudentEntity s WHERE email = :email")
     Optional<StudentEntity> findByEmail(@Param("email") String email);
 }

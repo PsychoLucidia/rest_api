@@ -11,6 +11,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.dattci.rest_api.exeptionHandler.exceptions.BadRequestException;
 import com.dattci.rest_api.exeptionHandler.exceptions.EmptyNameException;
+import com.dattci.rest_api.exeptionHandler.exceptions.NotAuthorizedException;
 import com.dattci.rest_api.exeptionHandler.exceptions.NotFoundException;
 
 import java.time.LocalDateTime;
@@ -138,6 +139,23 @@ public class GlobalExceptionHandler {
                 status.value(),
                 status.getReasonPhrase(),
                 "Invalid Email or Password.",
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(response, status);
+    }
+
+    @ExceptionHandler(NotAuthorizedException.class)
+    public ResponseEntity<?> notAuthorizedException(
+            NotAuthorizedException e,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.FORBIDDEN;
+
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                "You are not authorized to access this resource.",
                 request.getRequestURI()
         );
         return new ResponseEntity<>(response, status);

@@ -7,6 +7,7 @@ import com.dattci.rest_api.enums.Roles;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class StudentEntity {
 
     @Id
@@ -55,5 +57,6 @@ public class StudentEntity {
         joinColumns = @JoinColumn(name = "student_id"),
         inverseJoinColumns = @JoinColumn(name = "subject_id")
     )
+    @Builder.Default
     private Set<SubjectEntity> enrolledSubjects = new HashSet<>();    
 }
