@@ -29,9 +29,9 @@ public class StudentController {
     public ResponseEntity<List<StudentDisplayDTO>> getAllStudents() {
         List<StudentDisplayDTO> dtos = studentRepository
                 .findAllWithDetails().stream()
-                .map(studentMapper::toDisplayDTO)
+                .map(studentMapper::toDisplayDTO)       
                 .toList();
-        return ResponseEntity.ok(dtos);
+        return ResponseEntity.ok(dtos); 
     }
 
     // GET: Fetch a single student by ID

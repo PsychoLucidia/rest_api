@@ -17,8 +17,10 @@ public class StudentMapper {
 
         return new StudentDisplayDTO(
                 student.getId(),
-                student.getName(),
-//                student.getEmail(),
+                student.getFirstName(),
+                student.getLastName(),
+                student.getEmail(),
+                student.getUsername(),
                 courseName,
                 subjectTitles
         );

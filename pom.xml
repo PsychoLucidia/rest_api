@@ -69,6 +69,13 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- Spring Crypto Security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+			<version>7.1.0</version>
+		</dependency>
+
 		<!-- Tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
