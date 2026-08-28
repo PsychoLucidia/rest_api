@@ -1,3 +1,6 @@
 package com.dattci.rest_api.dto;
 
-public record RegisterAdminResponse(String message) { }
+public record RegisterAdminResponse(
+    String timestamp,
+    String message
+) { }

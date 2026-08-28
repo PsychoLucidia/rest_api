@@ -37,7 +37,7 @@ public class StudentController {
     @GetMapping
     public ResponseEntity<List<StudentDisplayDTO>> getAllStudents() {
         List<StudentDisplayDTO> dtos = studentRepository
-                .findAllWithDetails().stream()
+                .findStudentsByRole(Roles.STUDENT).stream()
                 .map(studentMapper::toDisplayDTO)       
                 .toList();
         return ResponseEntity.ok(dtos); 

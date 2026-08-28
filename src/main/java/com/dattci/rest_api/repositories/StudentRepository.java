@@ -1,6 +1,8 @@
 package com.dattci.rest_api.repositories;
 
 import com.dattci.rest_api.entities.StudentEntity;
+import com.dattci.rest_api.enums.Roles;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,4 +40,10 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
 
     @Query("SELECT DISTINCT s FROM StudentEntity s WHERE email = :email")
     Optional<StudentEntity> findByEmail(@Param("email") String email);
+    
+    @Query("SELECT DISTINCT s FROM StudentEntity s " +
+            "LEFT JOIN FETCH s.course " +
+            "LEFT JOIN FETCH s.enrolledSubjects " + 
+            "WHERE role = :role")
+    List<StudentEntity> findStudentsByRole(@Param("role") Roles role);
 }

@@ -17,6 +17,9 @@ import com.dattci.rest_api.services.JwtService;
 
 import lombok.AllArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -76,7 +79,10 @@ public class LoginController {
 
         studentRepository.save(saved);
 
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
         RegisterAdminResponse response = new RegisterAdminResponse(
+            LocalDateTime.now().format(format),
             "Admin registered."
         );
     
