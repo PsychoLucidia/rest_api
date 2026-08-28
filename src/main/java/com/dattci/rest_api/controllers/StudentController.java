@@ -44,7 +44,7 @@ public class StudentController {
     }
 
     // GET: Fetch a single student by ID
-    @GetMapping("/{id}")
+    @GetMapping("/api/students/students/{id}")
     public ResponseEntity<StudentDisplayDTO> getStudentById(@PathVariable Long id) {
         return studentRepository.findByIdWithDetails(id)
                 .map(studentMapper::toDisplayDTO)
