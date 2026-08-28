@@ -4,24 +4,32 @@ import com.dattci.rest_api.dto.StudentMapper;
 import com.dattci.rest_api.entities.CourseEntity;
 import com.dattci.rest_api.entities.StudentEntity;
 import com.dattci.rest_api.entities.SubjectEntity;
+import com.dattci.rest_api.enums.Roles;
+import com.dattci.rest_api.exeptionHandler.exceptions.ExistingAdminException;
+import com.dattci.rest_api.exeptionHandler.exceptions.ExistingStudentException;
+import com.dattci.rest_api.exeptionHandler.exceptions.NotFoundException;
 import com.dattci.rest_api.repositories.CourseRepository;
 import com.dattci.rest_api.repositories.StudentRepository;
 import com.dattci.rest_api.repositories.SubjectRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/admin/students")
 public class StudentController {
+
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
     private final SubjectRepository subjectRepository;
     private final StudentMapper studentMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     // GET: List all students (Formatted with Full Name, CourseEntity, Subjects)
@@ -70,7 +78,25 @@ public class StudentController {
     // /api/student
     @PostMapping
     public ResponseEntity<StudentEntity> createStudent(@RequestBody StudentEntity student) {
-        StudentEntity saved = studentRepository.save(student);
+
+        Optional<StudentEntity> existingStudent = studentRepository.findByEmail(student.getEmail());
+
+        if (!existingStudent.isEmpty()) {
+            if (existingStudent.get().getRole() == Roles.ADMIN) {
+                throw new ExistingAdminException(student);
+            } else if (existingStudent.get().getEmail().equals(student.getEmail())) {
+                throw new ExistingStudentException(student);
+            }
+        }
+
+        StudentEntity saved = StudentEntity.builder()
+            .firstName(student.getFirstName())
+            .lastName(student.getLastName())
+            .email(student.getEmail().toLowerCase())
+            .username(student.getUsername())
+            .password(passwordEncoder.encode(student.getPassword()))
+            .role(Roles.STUDENT)
+            .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
@@ -79,9 +105,9 @@ public class StudentController {
     @PutMapping("/{studentId}/course/{courseId}")
     public ResponseEntity<StudentDisplayDTO> assignCourse(@PathVariable Long studentId, @PathVariable Long courseId) {
         StudentEntity student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("StudentEntity not found"));
+                .orElseThrow(() -> new NotFoundException("StudentEntity not found"));
         CourseEntity course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("CourseEntity not found"));
+                .orElseThrow(() -> new NotFoundException("CourseEntity not found"));
 
         student.setCourse(course);
         StudentEntity updated = studentRepository.save(student);

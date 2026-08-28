@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,6 +13,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.dattci.rest_api.exeptionHandler.exceptions.BadRequestException;
 import com.dattci.rest_api.exeptionHandler.exceptions.EmptyNameException;
+import com.dattci.rest_api.exeptionHandler.exceptions.ExistingAdminException;
+import com.dattci.rest_api.exeptionHandler.exceptions.ExistingStudentException;
 import com.dattci.rest_api.exeptionHandler.exceptions.NotAuthorizedException;
 import com.dattci.rest_api.exeptionHandler.exceptions.NotFoundException;
 
@@ -34,20 +38,20 @@ public class GlobalExceptionHandler {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         ErrorResponse errorResponse = new ErrorResponse(
-                //gets the date and time now
-                LocalDateTime.now(),
+            //gets the date and time now
+            LocalDateTime.now(),
 
-                //gets the error code
-                status.value(),
+            //gets the error code
+            status.value(),
 
-                //gets the reason of the error code
-                status.getReasonPhrase(),
+            //gets the reason of the error code
+            status.getReasonPhrase(),
 
-                //a descriptive message
-                "You entered an invalid course id",
+            //a descriptive message
+            "You entered an invalid course id",
 
-                //gets the endpoint, /api/...
-                request.getRequestURI()
+            //gets the endpoint, /api/...
+            request.getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, status);
     }
@@ -61,11 +65,11 @@ public class GlobalExceptionHandler {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                "Course name cannot be empty.",
-                request.getRequestURI()
+            LocalDateTime.now(),
+            status.value(),
+            status.getReasonPhrase(),
+            "Course name cannot be empty.",
+            request.getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, status);
     }
@@ -80,11 +84,11 @@ public class GlobalExceptionHandler {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
         ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                "Numbers only, invalid course ID: " + e.getValue(),
-                request.getRequestURI()
+            LocalDateTime.now(),
+            status.value(),
+            status.getReasonPhrase(),
+            "Numbers only, invalid course ID: " + e.getValue(),
+            request.getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, status);
     }
@@ -98,11 +102,11 @@ public class GlobalExceptionHandler {
         HttpStatus status = HttpStatus.NOT_FOUND;
 
         ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                "You entered a non-existing course id",
-                request.getRequestURI()
+            LocalDateTime.now(),
+            status.value(),
+            status.getReasonPhrase(), 
+            "You entered a non-existing course id",
+            request.getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, status);
     }
@@ -132,7 +136,7 @@ public class GlobalExceptionHandler {
             AuthenticationException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.FORBIDDEN;
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
 
         ErrorResponse response = new ErrorResponse(
                 LocalDateTime.now(),
@@ -149,15 +153,81 @@ public class GlobalExceptionHandler {
             NotAuthorizedException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.FORBIDDEN;
+        HttpStatus status = HttpStatus.FORBIDDEN; 
 
         ErrorResponse response = new ErrorResponse(
                 LocalDateTime.now(),
                 status.value(),
                 status.getReasonPhrase(),
-                "You are not authorized to access this resource.",
+                e.getLocalizedMessage(),
                 request.getRequestURI()
         );
         return new ResponseEntity<>(response, status);
     }
+
+    @ExceptionHandler(InsufficientAuthenticationException.class)
+    public ResponseEntity<?> insufficientAuthenticationException(
+        InsufficientAuthenticationException e,
+        HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.FORBIDDEN;
+
+        ErrorResponse response = new ErrorResponse(
+            LocalDateTime.now(),
+            status.value(),
+            status.getReasonPhrase(),
+            "Access Denied: Not logged in.",
+            request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(response);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> accessDeniedException(
+        AccessDeniedException e,
+        HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.FORBIDDEN;
+
+        ErrorResponse response = new ErrorResponse(
+            LocalDateTime.now(),
+            status.value(),
+            status.getReasonPhrase(),
+            "Access Denied: Needed higher role privilege.",
+            request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(response);
+    }
+
+    @ExceptionHandler(ExistingStudentException.class)
+    public ResponseEntity<?> handleExistingStudentException(ExistingStudentException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        ErrorResponse response = new ErrorResponse(
+            LocalDateTime.now(),
+            status.value(),
+            status.getReasonPhrase(),
+            e.getMessage(),
+            request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(response);
+    }
+
+    @ExceptionHandler(ExistingAdminException.class)
+    public ResponseEntity<?> handleExistingAdminException(ExistingAdminException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        ErrorResponse response = new ErrorResponse(
+            LocalDateTime.now(),
+            status.value(),
+            status.getReasonPhrase(),
+            e.getMessage(),
+            request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(response);
+    }    
 }

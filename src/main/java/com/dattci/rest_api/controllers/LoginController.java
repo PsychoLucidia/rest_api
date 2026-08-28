@@ -55,10 +55,10 @@ public class LoginController {
 
         String token = jwtService.createToken(details);
         
-        return ResponseEntity.ok(new LoginResponse(token));
+        return ResponseEntity.ok(new LoginResponse(token, "Bearer"));
     }
 
-    @PostMapping("/register")
+    @PostMapping("/register/admin")
     public ResponseEntity<RegisterAdminResponse> registerAdminRequest(@RequestBody RegisterAdminRequest entity) {
         
         if (!entity.secretKey().equals(masterPass.getMasterPassword())) {
@@ -68,7 +68,7 @@ public class LoginController {
         StudentEntity saved = StudentEntity.builder()
         .firstName(entity.firstName())
         .lastName(entity.lastName())
-        .email(entity.email())
+        .email(entity.email().toLowerCase())
         .username(entity.username())
         .password(passwordEncoder.encode(entity.password()))
         .role(Roles.ADMIN)
