@@ -131,9 +131,9 @@ public class StudentController {
     @PutMapping("/{studentId}/subject/{subjectId}")
     public ResponseEntity<StudentDisplayDTO> enrollSubject(@PathVariable Long studentId, @PathVariable Long subjectId) {
         StudentEntity student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("StudentEntity not found"));
+                .orElseThrow(() -> new NotFoundException("StudentEntity not found"));
         SubjectEntity subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new RuntimeException("SubjectEntity not found"));
+                .orElseThrow(() -> new NotFoundException("SubjectEntity not found"));
 
         student.getEnrolledSubjects().add(subject);
         StudentEntity updated = studentRepository.save(student);

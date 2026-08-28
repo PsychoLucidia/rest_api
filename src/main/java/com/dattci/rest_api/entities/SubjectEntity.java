@@ -17,6 +17,9 @@ public class SubjectEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "subject_id")
+    private String subjectid;
+
     @Column(name = "title")
     private String title;
 
