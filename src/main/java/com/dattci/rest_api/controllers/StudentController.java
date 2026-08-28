@@ -1,4 +1,5 @@
 package com.dattci.rest_api.controllers;
+import com.dattci.rest_api.dto.RegisterStudentResponse;
 import com.dattci.rest_api.dto.StudentDisplayDTO;
 import com.dattci.rest_api.dto.StudentMapper;
 import com.dattci.rest_api.entities.CourseEntity;
@@ -77,7 +78,7 @@ public class StudentController {
     // POST: Create a new StudentEntity
     // /api/student
     @PostMapping
-    public ResponseEntity<StudentEntity> createStudent(@RequestBody StudentEntity student) {
+    public ResponseEntity<RegisterStudentResponse> createStudent(@RequestBody StudentEntity student) {
 
         Optional<StudentEntity> existingStudent = studentRepository.findByEmail(student.getEmail());
 
@@ -97,7 +98,18 @@ public class StudentController {
             .password(passwordEncoder.encode(student.getPassword()))
             .role(Roles.STUDENT)
             .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+
+        studentRepository.save(saved);
+
+        RegisterStudentResponse response = new RegisterStudentResponse(
+            "Created student.",
+            saved.getFirstName(),
+            saved.getLastName(),
+            saved.getEmail(),
+            saved.getUsername()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // PUT: Assign CourseEntity to StudentEntity (Many-to-One)
