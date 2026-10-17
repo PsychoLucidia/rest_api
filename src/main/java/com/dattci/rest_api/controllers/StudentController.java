@@ -1,4 +1,5 @@
 package com.dattci.rest_api.controllers;
+import com.dattci.rest_api.dto.DeleteStudentResponse;
 import com.dattci.rest_api.dto.RegisterStudentResponse;
 import com.dattci.rest_api.dto.StudentDisplayDTO;
 import com.dattci.rest_api.dto.StudentMapper;
@@ -18,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,7 +82,6 @@ public class StudentController {
     // /api/student
     @PostMapping
     public ResponseEntity<RegisterStudentResponse> createStudent(@RequestBody StudentEntity student) {
-
         Optional<StudentEntity> existingStudent = studentRepository.findByEmail(student.getEmail());
 
         if (!existingStudent.isEmpty()) {
@@ -138,5 +140,23 @@ public class StudentController {
         student.getEnrolledSubjects().add(subject);
         StudentEntity updated = studentRepository.save(student);
         return ResponseEntity.ok(studentMapper.toDisplayDTO(updated));
+    }
+
+    // DELETE: Delete a student by ID
+    @DeleteMapping("/delete/{studentId}")
+    public ResponseEntity<DeleteStudentResponse> deleteStudentById(@PathVariable Long studentId) {
+        StudentEntity student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new NotFoundException("StudentEntity not found"));
+
+        studentRepository.delete(student);
+
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+        DeleteStudentResponse response = new DeleteStudentResponse(
+            LocalDateTime.now().format(format),
+            "Student deleted successfully."
+        );
+
+        return ResponseEntity.ok(response);
     }
 }

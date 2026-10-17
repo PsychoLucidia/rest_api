@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dattci.rest_api.config.MasterPass;
+import com.dattci.rest_api.dto.DeleteAdminRequest;
+import com.dattci.rest_api.dto.DeleteAdminResponse;
 import com.dattci.rest_api.dto.LoginRequest;
 import com.dattci.rest_api.dto.LoginResponse;
 import com.dattci.rest_api.dto.RegisterAdminRequest;
@@ -11,6 +13,7 @@ import com.dattci.rest_api.dto.RegisterAdminResponse;
 import com.dattci.rest_api.entities.StudentEntity;
 import com.dattci.rest_api.enums.Roles;
 import com.dattci.rest_api.exeptionHandler.exceptions.NotAuthorizedException;
+import com.dattci.rest_api.exeptionHandler.exceptions.NotFoundException;
 import com.dattci.rest_api.repositories.StudentRepository;
 import com.dattci.rest_api.services.CustomUserDetailsService;
 import com.dattci.rest_api.services.JwtService;
@@ -26,6 +29,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -88,5 +93,31 @@ public class LoginController {
     
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-    
+
+    @DeleteMapping("/delete/admin/{adminId}")
+    public ResponseEntity<DeleteAdminResponse> deleteAdminById(@PathVariable Long adminId, @RequestBody DeleteAdminRequest request) {
+
+        if (!request.secretKey().equals(masterPass.getMasterPassword())) {
+            throw new NotAuthorizedException("Master Password incorrect.");
+        }
+
+        StudentEntity admin = studentRepository.findById(adminId)
+                .orElseThrow(() -> new NotFoundException("Admin not found"));
+
+        if (admin.getRole() != Roles.ADMIN) {
+            throw new NotAuthorizedException("User is not an admin.");
+        }
+
+        studentRepository.delete(admin);
+
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+        DeleteAdminResponse response = new DeleteAdminResponse(
+            LocalDateTime.now().format(format),
+            "Admin deleted successfully."
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
 }

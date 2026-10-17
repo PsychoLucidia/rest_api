@@ -34,8 +34,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationConverter converter) throws Exception {
-        http
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint))
+        http.exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session ->
                 session.sessionCreationPolicy(
