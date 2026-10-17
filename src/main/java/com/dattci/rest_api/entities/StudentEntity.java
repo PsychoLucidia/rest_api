@@ -6,18 +6,14 @@ import java.util.Set;
 import com.dattci.rest_api.enums.Roles;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "students")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class StudentEntity {
 
@@ -58,5 +54,21 @@ public class StudentEntity {
         inverseJoinColumns = @JoinColumn(name = "subject_id")
     )
     @Builder.Default
-    private Set<SubjectEntity> enrolledSubjects = new HashSet<>();    
+    private Set<SubjectEntity> enrolledSubjects = new HashSet<>();
+
+    public StudentEntity() {}
+
+    public StudentEntity(Long id, String firstName, String lastName, String email,
+            String username, String password, Roles role, CourseEntity course,
+            Set<SubjectEntity> enrolledSubjects) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.course = course;
+        this.enrolledSubjects = enrolledSubjects;
+    }
 }

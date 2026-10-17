@@ -18,8 +18,6 @@ import com.dattci.rest_api.repositories.StudentRepository;
 import com.dattci.rest_api.services.CustomUserDetailsService;
 import com.dattci.rest_api.services.JwtService;
 
-import lombok.AllArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -36,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 
-@AllArgsConstructor
 @RestController
 @RequestMapping("/api/public/auth")
 public class LoginController {
@@ -50,6 +47,17 @@ public class LoginController {
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
     private final JwtService jwtService;
+
+    public LoginController(MasterPass masterPass, StudentRepository studentRepository,
+            PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager,
+            CustomUserDetailsService userDetailsService, JwtService jwtService) {
+        this.masterPass = masterPass;
+        this.studentRepository = studentRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.jwtService = jwtService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginRequest(@RequestBody LoginRequest request) {

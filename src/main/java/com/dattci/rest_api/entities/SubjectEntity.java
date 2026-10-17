@@ -10,8 +10,6 @@ import java.util.Set;
 @Table(name = "subjects")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class SubjectEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,4 +24,13 @@ public class SubjectEntity {
     // Many Subjects belong to Many Students
     @ManyToMany(mappedBy = "enrolledSubjects")
     private Set<StudentEntity> students = new HashSet<>();
+
+    public SubjectEntity() {}
+
+    public SubjectEntity(Long id, String subjectid, String title, Set<StudentEntity> students) {
+        this.id = id;
+        this.subjectid = subjectid;
+        this.title = title;
+        this.students = students;
+    }
 }

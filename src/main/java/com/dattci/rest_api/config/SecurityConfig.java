@@ -15,17 +15,18 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.dattci.rest_api.components.CustomAuthenticationEntryPoint;
 
-import lombok.AllArgsConstructor;
-
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 
-@AllArgsConstructor
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
 
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+
+    public SecurityConfig(CustomAuthenticationEntryPoint authenticationEntryPoint) {
+        this.authenticationEntryPoint = authenticationEntryPoint;
+    }
 
     @Bean
     public MasterPass masterPass() {

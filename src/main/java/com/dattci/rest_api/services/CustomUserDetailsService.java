@@ -12,15 +12,17 @@ import org.springframework.stereotype.Service;
 import com.dattci.rest_api.entities.StudentEntity;
 import com.dattci.rest_api.repositories.StudentRepository;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
     private final StudentRepository studentRepository;
+
+    public CustomUserDetailsService(PasswordEncoder passwordEncoder, StudentRepository studentRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.studentRepository = studentRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {

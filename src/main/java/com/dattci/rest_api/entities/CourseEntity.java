@@ -10,8 +10,6 @@ import java.util.List;
 @Table(name = "courses")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class CourseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +21,12 @@ public class CourseEntity {
     // One Course has Many Students
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<StudentEntity> students = new ArrayList<>();
+
+    public CourseEntity() {}
+
+    public CourseEntity(Long id, String name, List<StudentEntity> students) {
+        this.id = id;
+        this.name = name;
+        this.students = students;
+    }
 }

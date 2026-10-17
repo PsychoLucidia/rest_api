@@ -13,7 +13,6 @@ import com.dattci.rest_api.exeptionHandler.exceptions.NotFoundException;
 import com.dattci.rest_api.repositories.CourseRepository;
 import com.dattci.rest_api.repositories.StudentRepository;
 import com.dattci.rest_api.repositories.SubjectRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +23,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
 @RestController
 @RequestMapping("/api/admin/students")
 public class StudentController {
@@ -34,6 +32,16 @@ public class StudentController {
     private final SubjectRepository subjectRepository;
     private final StudentMapper studentMapper;
     private final PasswordEncoder passwordEncoder;
+
+    public StudentController(StudentRepository studentRepository, CourseRepository courseRepository,
+            SubjectRepository subjectRepository, StudentMapper studentMapper,
+            PasswordEncoder passwordEncoder) {
+        this.studentRepository = studentRepository;
+        this.courseRepository = courseRepository;
+        this.subjectRepository = subjectRepository;
+        this.studentMapper = studentMapper;
+        this.passwordEncoder = passwordEncoder;
+    }
 
 
     // GET: List all students (Formatted with Full Name, CourseEntity, Subjects)
